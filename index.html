@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توقع أداء الطالب</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, select {
+            margin-top: 5px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>توقع أداء الطالب</h1>
+        <form id="predictionForm">
+            <label for="Age">العمر:</label>
+            <input type="number" id="Age" name="Age" min="15" max="18" required>
+
+            <label for="Gender">الجنس:</label>
+            <select id="Gender" name="Gender" required>
+                <option value="0">ذكر</option>
+                <option value="1">أنثى</option>
+            </select>
+
+            <label for="Ethnicity">العرق:</label>
+            <select id="Ethnicity" name="Ethnicity" required>
+                <option value="0">قوقازي</option>
+                <option value="1">أفريقي أمريكي</option>
+                <option value="2">آسيوي</option>
+                <option value="3">آخر</option>
+            </select>
+
+            <label for="ParentalEducation">مستوى تعليم الوالدين:</label>
+            <select id="ParentalEducation" name="ParentalEducation" required>
+                <option value="0">لا يوجد</option>
+                <option value="1">ثانوي</option>
+                <option value="2">بعض الدراسة الجامعية</option>
+                <option value="3">بكالوريوس</option>
+                <option value="4">أعلى</option>
+            </select>
+
+            <label for="StudyTimeWeekly">وقت الدراسة الأسبوعي (بالساعات):</label>
+            <input type="number" id="StudyTimeWeekly" name="StudyTimeWeekly" min="0" max="20" step="0.1" required>
+
+            <label for="Absences">عدد مرات الغياب:</label>
+            <input type="number" id="Absences" name="Absences" min="0" max="30" required>
+
+            <label for="Tutoring">دروس خصوصية:</label>
+            <select id="Tutoring" name="Tutoring" required>
+                <option value="0">لا</option>
+                <option value="1">نعم</option>
+            </select>
+
+            <label for="ParentalSupport">دعم الوالدين:</label>
+            <select id="ParentalSupport" name="ParentalSupport" required>
+                <option value="0">لا يوجد</option>
+                <option value="1">منخفض</option>
+                <option value="2">متوسط</option>
+                <option value="3">عالي</option>
+                <option value="4">عالي جدًا</option>
+            </select>
+
+            <label for="Extracurricular">أنشطة لا منهجية:</label>
+            <select id="Extracurricular" name="Extracurricular" required>
+                <option value="0">لا</option>
+                <option value="1">نعم</option>
+            </select>
+
+            <label for="Sports">أنشطة رياضية:</label>
+            <select id="Sports" name="Sports" required>
+                <option value="0">لا</option>
+                <option value="1">نعم</option>
+            </select>
+
+            <label for="Music">أنشطة موسيقية:</label>
+            <select id="Music" name="Music" required>
+                <option value="0">لا</option>
+                <option value="1">نعم</option>
+            </select>
+
+            <label for="Volunteering">عمل تطوعي:</label>
+            <select id="Volunteering" name="Volunteering" required>
+                <option value="0">لا</option>
+                <option value="1">نعم</option>
+            </select>
+
+            <button type="button" onclick="getPrediction()">احصل على التوقع</button>
+        </form>
+
+        <h2 id="result"></h2>
+    </div>
+
+    <script>
+        async function getPrediction() {
+            const form = document.getElementById('predictionForm');
+            const formData = new FormData(form);
+            const params = new URLSearchParams(formData);
+
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/predict?${params.toString()}`);
+                const data = await response.json();
+                document.getElementById('result').innerText = `الدرجة المتوقعة: ${data['الدرجة المتوقعة']}`;
+            } catch (error) {
+                console.error('Error fetching prediction:', error);
+                document.getElementById('result').innerText = 'حدث خطأ أثناء الحصول على التوقع.';
+            }
+        }
+    </script>
+</body>
+</html>
